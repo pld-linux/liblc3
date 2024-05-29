@@ -1,20 +1,23 @@
 #
 # Conditional build:
 %bcond_without	static_libs	# static library
+%bcond_without	python3		# CPython 3.x module
 #
 Summary:	Low Complexity Communication Codec (LC3)
 Summary(pl.UTF-8):	Kodek LC3 (Low Complexity Communication Codec)
 Name:		liblc3
-Version:	1.0.4
+Version:	1.1.1
 Release:	1
 License:	Apache v2.0
 Group:		Libraries
 #Source0Download: https://github.com/google/liblc3/releases
 Source0:	https://github.com/google/liblc3/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	41ba0aba4d86713e5c7a102330bc2307
+# Source0-md5:	4c83d316d0ee665746360da63207f9ce
 URL:		https://github.com/google/liblc3
-BuildRequires:	meson >= 0.47.0
+BuildRequires:	meson >= 0.48.0
 BuildRequires:	ninja >= 1.5
+%{?with_python3:BuildRequires:	python3-modules >= 1:3.10}
+BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.736
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -48,12 +51,27 @@ Static LC3 library.
 %description static -l pl.UTF-8
 Statyczna biblioteka LC3.
 
+%package -n python3-liblc3
+Summary:	Python wrapper for LC3 Codec library
+Summary(pl.UTF-8):	Pythonowy interfejs do biblioteki kodeka LC3
+Group:		Libraries/Python
+Requires:	%{name} = %{version}-%{release}
+Requires:	python3-modules >= 1:3.10
+BuildArch:	noarch
+
+%description -n python3-liblc3
+Python wrapper for LC3 Codec library.
+
+%description -n python3-liblc3 -l pl.UTF-8
+Pythonowy interfejs do biblioteki kodeka LC3.
+
 %prep
 %setup -q
 
 %build
 %meson build \
 	%{!?with_static_libs:--default-library=shared} \
+	%{?with_python3:-Dpython=true} \
 	-Dtools=true
 
 %ninja_build -C build
@@ -88,4 +106,11 @@ rm -rf $RPM_BUILD_ROOT
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/liblc3.a
+%endif
+
+%if %{with python3}
+%files -n python3-liblc3
+%defattr(644,root,root,755)
+%{py3_sitescriptdir}/lc3.py
+%{py3_sitescriptdir}/__pycache__/lc3.cpython-*.py[co]
 %endif
