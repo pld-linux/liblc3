@@ -7,7 +7,7 @@ Summary:	Low Complexity Communication Codec (LC3)
 Summary(pl.UTF-8):	Kodek LC3 (Low Complexity Communication Codec)
 Name:		liblc3
 Version:	1.1.1
-Release:	2
+Release:	3
 License:	Apache v2.0
 Group:		Libraries
 #Source0Download: https://github.com/google/liblc3/releases
