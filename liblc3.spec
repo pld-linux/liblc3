@@ -6,19 +6,19 @@
 Summary:	Low Complexity Communication Codec (LC3)
 Summary(pl.UTF-8):	Kodek LC3 (Low Complexity Communication Codec)
 Name:		liblc3
-Version:	1.1.1
-Release:	3
+Version:	1.1.3
+Release:	1
 License:	Apache v2.0
 Group:		Libraries
 #Source0Download: https://github.com/google/liblc3/releases
 Source0:	https://github.com/google/liblc3/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	4c83d316d0ee665746360da63207f9ce
+# Source0-md5:	c9252af36fbece63de402488675a9274
 URL:		https://github.com/google/liblc3
 BuildRequires:	meson >= 0.48.0
 BuildRequires:	ninja >= 1.5
 %{?with_python3:BuildRequires:	python3-modules >= 1:3.10}
 BuildRequires:	rpm-build >= 4.6
-BuildRequires:	rpmbuild(macros) >= 1.736
+BuildRequires:	rpmbuild(macros) >= 2.042
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -69,17 +69,17 @@ Pythonowy interfejs do biblioteki kodeka LC3.
 %setup -q
 
 %build
-%meson build \
+%meson \
 	%{!?with_static_libs:--default-library=shared} \
 	%{?with_python3:-Dpython=true} \
 	-Dtools=true
 
-%ninja_build -C build
+%meson_build
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%ninja_install -C build
+%meson_install
 
 %clean
 rm -rf $RPM_BUILD_ROOT
